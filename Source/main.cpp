@@ -263,7 +263,7 @@ void build_windows()
 		exit(1);
 	}
 	//Create window
-	MainWindow = CreateWindow("Ultra Engine", (sz.x - SCREEN_WIDTH) / 2, (sz.y - 720) / 2, SCREEN_WIDTH, 720, displays[0]);
+	MainWindow = CreateWindow("Cribbage 0.2", (sz.x - SCREEN_WIDTH) / 2, (sz.y - 720) / 2, SCREEN_WIDTH, 720, displays[0]);
 
 	//Create user interface
 	MainUI = CreateInterface(MainWindow);
