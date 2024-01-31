@@ -1,3 +1,5 @@
+//#define DEBUG
+
 #include "UltraEngine.h"
 #include <typeinfo>
 #include <iostream>
@@ -263,7 +265,7 @@ void build_windows()
 		exit(1);
 	}
 	//Create window
-	MainWindow = CreateWindow("Cribbage 0.2", (sz.x - SCREEN_WIDTH) / 2, (sz.y - 720) / 2, SCREEN_WIDTH, 720, displays[0]);
+	MainWindow = CreateWindow("Cribbage 0.3", (sz.x - SCREEN_WIDTH) / 2, (sz.y - 720) / 2, SCREEN_WIDTH, 720, displays[0]);
 
 	//Create user interface
 	MainUI = CreateInterface(MainWindow);
@@ -848,6 +850,7 @@ bool btnPlayClicked(const Event& ev, shared_ptr<Object> extra)
 		}
 		selectedCardCount = 0;
 
+#ifdef DEBUG
 		printf("Player (after crib 1): ");
 		for (int i = 0; i < 6; i++)
 		{
@@ -867,6 +870,7 @@ bool btnPlayClicked(const Event& ev, shared_ptr<Object> extra)
 			printf("%s, ", theCrib[i]->printable.c_str());
 		}
 		printf("\n");
+#endif
 
 		// Get the players hand ready to play and display it.
 		for (int i = 0; i < 6; i++)
@@ -881,8 +885,10 @@ bool btnPlayClicked(const Event& ev, shared_ptr<Object> extra)
 			}
 		}
 
+#ifdef DEBUG
 		printf("Player (after crib 2): %s, %s, %s, %s\n", playerHand[0]->printable.c_str(), playerHand[1]->printable.c_str(),
 			playerHand[2]->printable.c_str(), playerHand[3]->printable.c_str());
+#endif
 
 		display_human_hand();
 
@@ -950,10 +956,12 @@ bool btnPlayClicked(const Event& ev, shared_ptr<Object> extra)
 		computerHand[4] = NULL;
 		computerHand[5] = NULL;
 
+#ifdef DEBUG
 		printf("Computer: %s, %s, %s, %s\n", computerHand[0]->printable.c_str(), computerHand[1]->printable.c_str(),
 			computerHand[2]->printable.c_str(), computerHand[3]->printable.c_str());
 		printf("Crib: %s, %s, %s, %s\n", theCrib[0]->printable.c_str(), theCrib[1]->printable.c_str(),
 			theCrib[2]->printable.c_str(), theCrib[3]->printable.c_str());
+#endif
 
 		DisplayComputerHand(false);
 
@@ -961,6 +969,18 @@ bool btnPlayClicked(const Event& ev, shared_ptr<Object> extra)
 		if (playedDeals)
 		{
 			int choice = rand() % 4;
+      if (computerHand[0]->value != 5 || computerHand[1]->value != 5 || computerHand[2]->value != 5 || computerHand[3]->value != 5) 
+      {
+        bool pickLoop = true;
+        while (pickLoop)
+        {
+         choice = rand() % 4;
+         if (computerHand[choice]->value != 5)
+         {
+           pickLoop = false;
+         }
+        }
+      }
 			playedCards[0] = computerHand[choice];
 			playedCards[1] = NULL;
 			imgPlayedCard[0].SetImage(computerHand[choice]->icon);
@@ -1251,12 +1271,24 @@ int* GetBest4Cards()
 	struct Card* fourCards[4];
 	int bestCount = 0;
 	static int bestChoice[4] = { 0, 1, 2, 3 };
+	int bestCrib[2] = { -1, 01 };
 
 	for (int i1 = 0; i1 < 3; i1++)
 	{
+		if (i1 > 0)
+			bestCrib[0] = 0;
+		if (i1 > 1)
+			bestCrib[1] = 1;
 		fourCards[0] = computerHand[i1];
 		for (int i2 = i1 + 1; i2 < 4; i2++)
 		{
+			if (i2 > i1 + 1)
+			{
+				if (bestCrib[0] == -1)
+					bestCrib[0] = i1 + 1;
+				else
+					bestCrib[1] = i1 + 1;
+			}
 			fourCards[1] = computerHand[i2];
 			for (int i3 = i2 + 1; i3 < 5; i3++)
 			{
