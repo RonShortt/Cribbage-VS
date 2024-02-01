@@ -265,7 +265,7 @@ void build_windows()
 		exit(1);
 	}
 	//Create window
-	MainWindow = CreateWindow("Cribbage 0.3", (sz.x - SCREEN_WIDTH) / 2, (sz.y - 720) / 2, SCREEN_WIDTH, 720, displays[0]);
+	MainWindow = CreateWindow("Cribbage 0.4", (sz.x - SCREEN_WIDTH) / 2, (sz.y - 720) / 2, SCREEN_WIDTH, 720, displays[0]);
 
 	//Create user interface
 	MainUI = CreateInterface(MainWindow);
@@ -895,7 +895,7 @@ bool btnPlayClicked(const Event& ev, shared_ptr<Object> extra)
 		if (playedDeals)
 		{
 			int humanCut;
-			humanCut = rand() % 40;
+			humanCut = 12 + (rand() % 40);
 			cutCard = &theDeck[humanCut];
 			imgCutCard.SetImage(cutCard->icon);
 			imgCutCard.Show();
